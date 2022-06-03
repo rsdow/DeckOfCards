@@ -1,0 +1,43 @@
+﻿// -- A.Write a query which returns each department and their annual cost to the company.
+SELECT d.department, SUM(e.annual_salary) as annual_cost
+FROM Employees as e
+INNER JOIN Departments as d 
+    ON e.department_id = d.id
+GROUP BY d.department
+
+// -- B. Write a query which returns the total sales amount for each employee who works for the sales department, showing the employees with the highest sales at the top.
+SELECT e.name, SUM(s.amount) as total_sales
+FROM Employees as e
+LEFT JOIN Sales as s 
+    ON e.id = s.employee_id
+WHERE e.department_id = 2
+GROUP BY e.name
+ORDER BY total_sales DESC
+
+// -- C. Write a query showing the profit/loss for the company by year/month.
+SELECT SUM(e.annual_salary) as total_annual_salary_expense,
+    SUM(s.amount) as total_annual_sales,
+    (0 - SUM(e.annual_salary) + SUM(s.amount)) as 'total_annual_profit/loss'
+FROM Employees as e
+RIGHT JOIN Sales as s 
+    ON s.id = e.id
+
+SELECT
+(CASE MONTH(s.sale_date)
+    WHEN 1 THEN 'Jan'
+    WHEN 2 THEN 'Feb'
+    WHEN 3 THEN 'Mar'
+    WHEN 4 THEN 'Apr'
+    WHEN 5 THEN 'May'
+    WHEN 6 THEN 'Jun'
+    WHEN 7 THEN 'Jul'
+    WHEN 8 THEN 'Aug'
+    WHEN 9 THEN 'Sep'
+    WHEN 10 THEN 'Oct'
+    WHEN 11 THEN 'Nov'
+    WHEN 12 THEN 'Dec'
+    ELSE 'Other'
+END) AS sale_month
+, SUM(s.amount) as total_monthly_sales
+FROM Sales as s
+GROUP BY MONTH(s.sale_date)
